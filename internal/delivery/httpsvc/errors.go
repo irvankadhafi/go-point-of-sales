@@ -15,6 +15,7 @@ var (
 	ErrInternal                   = echo.NewHTTPError(http.StatusInternalServerError, "internal system error")
 	ErrUnauthenticated            = echo.NewHTTPError(http.StatusUnauthorized, "unauthenticated")
 	ErrNotFound                   = echo.NewHTTPError(http.StatusNotFound, "record not found")
+	ErrProductNameAlreadyExist    = echo.NewHTTPError(http.StatusBadRequest, setErrorMessage("product name already exist"))
 )
 
 // httpValidationOrInternalErr return valdiation or internal error

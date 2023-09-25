@@ -3,15 +3,13 @@ package repository
 import (
 	"context"
 	"errors"
+	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/irvankadhafi/go-point-of-sales/internal/model"
+	"github.com/irvankadhafi/go-point-of-sales/rbac"
+	"github.com/irvankadhafi/go-point-of-sales/utils"
+	"github.com/stretchr/testify/require"
 	"regexp"
 	"testing"
-	"user-service/utils"
-
-	"user-service/internal/model"
-	"user-service/rbac"
-
-	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/stretchr/testify/require"
 )
 
 func TestGroupRepository_CreateRoleResourceAction(t *testing.T) {
@@ -22,12 +20,12 @@ func TestGroupRepository_CreateRoleResourceAction(t *testing.T) {
 	mock := kit.dbmock
 	repo := &rbacRepository{
 		db:           kit.db,
-		cacheManager: kit.cacheManager,
+		cacheManager: kit.cacheKeeper,
 	}
 
 	var (
 		role     = rbac.RoleAdmin
-		resource = rbac.ResourceMember
+		resource = rbac.ResourceUser
 		action   = rbac.ActionEditAny
 		ctx      = context.TODO()
 	)
@@ -58,7 +56,7 @@ func TestGroupRepository_LoadPermission(t *testing.T) {
 	mock := kit.dbmock
 	repo := &rbacRepository{
 		db:           kit.db,
-		cacheManager: kit.cacheManager,
+		cacheManager: kit.cacheKeeper,
 	}
 
 	var (

@@ -1,14 +1,10 @@
 package rbac
 
-import "sync"
+import (
+	"sync"
+)
 
 var mutex = &sync.RWMutex{}
-
-// ResourceAction pair of resource and action
-type ResourceAction struct {
-	Resource Resource
-	Action   Action
-}
 
 // Permission to store RBAC permission
 type Permission struct {
@@ -18,6 +14,12 @@ type Permission struct {
 // NewPermission constructor
 func NewPermission() *Permission {
 	return &Permission{}
+}
+
+// ResourceAction pair of resource and action
+type ResourceAction struct {
+	Resource Resource
+	Action   Action
 }
 
 // Add add permission for Role to the resource action

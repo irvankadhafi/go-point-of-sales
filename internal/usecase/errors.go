@@ -11,4 +11,6 @@ var (
 	ErrUnauthorized               = errors.New("unauthorized")
 	ErrAccessTokenExpired         = errors.New("access token expired")
 	ErrRefreshTokenExpired        = errors.New("refresh token expired")
+
+	ErrAlreadyExist = errors.New("already exist")
 )

@@ -17,7 +17,6 @@ type UserRepository interface {
 	UpdatePasswordByID(ctx context.Context, userID int64, password string) error
 	FindByID(ctx context.Context, id int64) (*User, error)
 	FindByEmail(ctx context.Context, email string) (*User, error)
-
 	IsLoginByEmailPasswordLocked(ctx context.Context, email string) (bool, error)
 	IncrementLoginByEmailPasswordRetryAttempts(ctx context.Context, email string) error
 	FindPasswordByID(ctx context.Context, id int64) ([]byte, error)

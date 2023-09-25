@@ -55,13 +55,13 @@ var _permissions = map[resourceAction][]Role{
 	{ResourceUser, ActionEditAny}:   {RoleAdmin},
 	{ResourceUser, ActionDeleteAny}: {RoleAdmin},
 
-	{ResourceProduct, ActionViewAny}:    {RoleAdmin, RoleProductManager, RoleFinancialAuditor},
-	{ResourceProduct, ActionEditAny}:    {RoleAdmin, RoleProductManager},
-	{ResourceProduct, ActionChangeRole}: {RoleAdmin, RoleProductManager},
-	{ResourceProduct, ActionDeleteAny}:  {RoleAdmin, RoleProductManager},
+	{ResourceProduct, ActionCreateAny}: {RoleAdmin, RoleProductManager},
+	{ResourceProduct, ActionViewAny}:   {RoleAdmin, RoleProductManager, RoleFinancialAuditor},
+	{ResourceProduct, ActionEditAny}:   {RoleAdmin, RoleProductManager},
+	{ResourceProduct, ActionDeleteAny}: {RoleAdmin, RoleProductManager},
 
-	{ResourceTransaction, ActionViewAny}:    {RoleAdmin, RoleCashiers, RoleFinancialAuditor},
-	{ResourceTransaction, ActionEditAny}:    {RoleAdmin, RoleCashiers},
-	{ResourceTransaction, ActionChangeRole}: {RoleAdmin, RoleCashiers},
-	{ResourceTransaction, ActionDeleteAny}:  {RoleAdmin, RoleCashiers},
+	{ResourceTransaction, ActionCreateAny}: {RoleAdmin, RoleCashiers},
+	{ResourceTransaction, ActionViewAny}:   {RoleAdmin, RoleCashiers, RoleFinancialAuditor},
+	{ResourceTransaction, ActionEditAny}:   {RoleAdmin, RoleCashiers},
+	{ResourceTransaction, ActionDeleteAny}: {RoleAdmin, RoleCashiers},
 }

@@ -20,5 +20,6 @@ func GetAuthUserFromCtx(ctx context.Context) *model.User {
 	}
 
 	user.SetRolePermission(authUser.RolePermission)
+
 	return user
 }

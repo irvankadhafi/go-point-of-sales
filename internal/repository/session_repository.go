@@ -183,6 +183,7 @@ func (s *sessionRepo) FindByID(ctx context.Context, id int64) (*model.Session, e
 		return nil, nil
 	}
 
+	sess.Role = user.Role
 	if err = s.cacheToken(&sess); err != nil {
 		logger.Error(err)
 	}

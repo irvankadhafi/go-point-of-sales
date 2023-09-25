@@ -4,15 +4,12 @@ import (
 	"context"
 	"github.com/irvankadhafi/go-point-of-sales/internal/model"
 	"github.com/irvankadhafi/go-point-of-sales/rbac"
-	//uuid "github.com/satori/go.uuid"
-	//"user-service/internal/model"
-	//"user-service/rbac"
 )
 
 type contextKey string
 
 // use module path to make it unique
-const userCtxKey contextKey = "user-service/auth.User"
+const userCtxKey contextKey = "github.com/irvankadhafi/go-point-of-sales/auth.User"
 
 // SetUserToCtx set user to context
 func SetUserToCtx(ctx context.Context, user User) context.Context {

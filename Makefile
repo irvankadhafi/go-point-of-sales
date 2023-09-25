@@ -8,7 +8,6 @@ test_command=richgo test ./... $(TEST_ARGS) -v --cover
 migrate_up=go run main.go migrate --direction=up --step=0
 migrate_down=go run main.go migrate --direction=down --step=0
 run_command=go run main.go server
-run_worker_command=go run main.go worker
 changelog_args=-o CHANGELOG.md -tag-filter-pattern '^v'
 
 auth/mock/mock_user_authenticator.go:
@@ -93,8 +92,6 @@ migrate:
 
 clean:
 	rm -v internal/model/mock/mock_*.go
-	rm -v client/mock/mock_*.go
-	rm -v internal/aws/mock/mock_*.go
 
 changelog:
 ifdef version
@@ -102,18 +99,5 @@ ifdef version
 endif
 	git-chglog $(changelog_args)
 
-gqlgen:
-	cd internal/delivery/graphqlsvc/schema && \
-	go get github.com/99designs/gqlgen@v0.17.2 && \
-	go run github.com/99designs/gqlgen generate
 
-.PHONY: run proto test clean mockgen check-modd-exists gqlgen
-
-run-integration:
-	@modd -f ./.modd/server-integration.modd.conf
-
-run-worker-integration:
-	@modd -f ./.modd/worker-integration.modd.conf
-
-integration-test:
-	cd qa && go test -v -tags=integration
+.PHONY: run proto test clean mockgen check-modd-exists

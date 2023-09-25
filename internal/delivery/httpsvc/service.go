@@ -8,11 +8,13 @@ import (
 
 // Service http service
 type Service struct {
-	echo             *echo.Group
-	authUsecase      model.AuthUsecase
-	userUsecase      model.UserUsecase
-	httpMiddleware   *auth.AuthenticationMiddleware
-	appClientUsecase model.AppClientUsecase
+	echo               *echo.Group
+	authUsecase        model.AuthUsecase
+	userUsecase        model.UserUsecase
+	appClientUsecase   model.AppClientUsecase
+	productUsecase     model.ProductUsecase
+	transactionUsecase model.TransactionUsecase
+	httpMiddleware     *auth.AuthenticationMiddleware
 }
 
 // RouteService add dependencies and use group for routing
@@ -20,15 +22,19 @@ func RouteService(
 	echo *echo.Group,
 	authUsecase model.AuthUsecase,
 	userUsecase model.UserUsecase,
-	authMiddleware *auth.AuthenticationMiddleware,
 	appClientUsecase model.AppClientUsecase,
+	productUsecase model.ProductUsecase,
+	transactionUsecase model.TransactionUsecase,
+	authMiddleware *auth.AuthenticationMiddleware,
 ) {
 	srv := &Service{
-		echo:             echo,
-		authUsecase:      authUsecase,
-		userUsecase:      userUsecase,
-		httpMiddleware:   authMiddleware,
-		appClientUsecase: appClientUsecase,
+		echo:               echo,
+		authUsecase:        authUsecase,
+		userUsecase:        userUsecase,
+		appClientUsecase:   appClientUsecase,
+		productUsecase:     productUsecase,
+		transactionUsecase: transactionUsecase,
+		httpMiddleware:     authMiddleware,
 	}
 
 	srv.initRoutes()
@@ -47,5 +53,15 @@ func (s *Service) initRoutes() {
 	{
 		userRoute.GET("/me/", s.handleGetCurrentLoginUser(), s.httpMiddleware.MustAuthenticateAccessToken())
 		userRoute.GET("/:userID/", s.handleGetUserByID(), s.httpMiddleware.MustAuthenticateAccessToken())
+	}
+
+	productRoute := s.echo.Group("/products")
+	{
+		productRoute.POST("/", s.handleCreateProduct(), s.httpMiddleware.MustAuthenticateAccessToken())
+	}
+
+	transactionRoute := s.echo.Group("/transactions")
+	{
+		transactionRoute.POST("/", s.handleCreateTransaction(), s.httpMiddleware.MustAuthenticateAccessToken())
 	}
 }

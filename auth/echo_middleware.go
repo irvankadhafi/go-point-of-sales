@@ -71,7 +71,6 @@ func (a *AuthenticationMiddleware) authenticateAccessToken(c echo.Context, next 
 	session, perm, err := a.findSessionAndPermissionFromCache(token)
 	switch err {
 	default:
-		// cache error will fallback to rpc
 		logrus.WithField("sessionCacheError", "find session from cache got error").Error(err)
 	case nil:
 		if session == nil || perm == nil {

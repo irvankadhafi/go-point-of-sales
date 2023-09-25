@@ -14,9 +14,9 @@ postgres:
 disable_caching: false
 redis:
   cache_host: "redis://localhost:26379/0"
-  lock_host: "redis://localhost:26379/1"
-  auth_cache_host: "redis://localhost:26379/2"
-  auth_cache_lock_host: "redis://localhost:26379/2"
+  lock_host: "redis://localhost:26379/0"
+  auth_cache_host: "redis://localhost:26379/0"
+  auth_cache_lock_host: "redis://localhost:26379/0"
   dial_timeout: 5
   write_timeout: 2
   read_timeout: 2

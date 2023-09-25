@@ -13,10 +13,10 @@ require (
 	github.com/go-redsync/redsync/v4 v4.9.4
 	github.com/golang/mock v1.6.0
 	github.com/gomodule/redigo v1.8.9
+	github.com/gosimple/slug v1.13.1
 	github.com/jpillora/backoff v1.0.0
 	github.com/labstack/echo v3.3.10+incompatible
 	github.com/rubenv/sql-migrate v1.5.2
-	github.com/satori/go.uuid v1.2.0
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/viper v1.16.0
@@ -38,6 +38,7 @@ require (
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/gosimple/unidecode v1.0.1 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect

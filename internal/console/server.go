@@ -76,15 +76,21 @@ func run(cmd *cobra.Command, args []string) {
 	generalCacher.SetLockConnectionPool(redisLockConn)
 	generalCacher.SetDefaultTTL(config.CacheTTL())
 
+	auditRepo := repository.NewAuditRepository()
 	rbacRepo := repository.NewRBACRepository(db.PostgreSQL, authenticationCacher)
 	userRepo := repository.NewUserRepository(db.PostgreSQL, generalCacher)
 	sessionRepo := repository.NewSessionRepository(db.PostgreSQL, authenticationCacher, userRepo)
 	appClientRepo := repository.NewAppClientRepository(db.PostgreSQL, authenticationCacher)
+	productRepo := repository.NewProductRepository(db.PostgreSQL, generalCacher, auditRepo)
+	transactionDetailRepo := repository.NewTransactionDetailRepository(db.PostgreSQL, generalCacher)
+	transactionRepo := repository.NewTransactionRepository(db.PostgreSQL, generalCacher, transactionDetailRepo, auditRepo)
 
 	userUsecase := usecase.NewUserUsecase(userRepo)
 	authUsecase := usecase.NewAuthUsecase(userRepo, sessionRepo, rbacRepo)
 	userAuther := usecase.NewUserAutherAdapter(authUsecase)
 	appClientUsecase := usecase.NewAppClientUsecase(appClientRepo)
+	productUsecase := usecase.NewProductUsecase(productRepo)
+	transactionUsecase := usecase.NewTransactionUsecase(transactionRepo, productRepo)
 
 	httpServer := echo.New()
 	httpMiddleware := auth.NewAuthenticationMiddleware(userAuther, authenticationCacher)
@@ -95,7 +101,7 @@ func run(cmd *cobra.Command, args []string) {
 	httpServer.Use(middleware.CORS())
 
 	apiGroup := httpServer.Group("/api")
-	httpsvc.RouteService(apiGroup, authUsecase, userUsecase, httpMiddleware, appClientUsecase)
+	httpsvc.RouteService(apiGroup, authUsecase, userUsecase, appClientUsecase, productUsecase, transactionUsecase, httpMiddleware)
 
 	sigCh := make(chan os.Signal, 1)
 	errCh := make(chan error, 1)
