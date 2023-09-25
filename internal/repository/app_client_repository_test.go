@@ -20,8 +20,8 @@ func TestAppClientRepository_FindByClientID(t *testing.T) {
 
 	ctx := context.TODO()
 	repo := &appClientRepo{
-		db:          kit.db,
-		cacheKeeper: kit.cacheKeeper,
+		db:    kit.db,
+		cache: kit.cache,
 	}
 
 	clientID := "ic-cms"
@@ -74,8 +74,8 @@ func TestAppClientRepository_FindByID(t *testing.T) {
 
 	ctx := context.TODO()
 	repo := &appClientRepo{
-		db:          kit.db,
-		cacheKeeper: kit.cacheKeeper,
+		db:    kit.db,
+		cache: kit.cache,
 	}
 
 	appID := int64(1)

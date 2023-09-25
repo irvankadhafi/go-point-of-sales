@@ -5,6 +5,7 @@
 package mock
 
 import (
+	context "context"
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
@@ -36,16 +37,15 @@ func (m *MockAuditRepository) EXPECT() *MockAuditRepositoryMockRecorder {
 }
 
 // Audit mocks base method.
-func (m *MockAuditRepository) Audit(arg0 *gorm.DB, arg1 interface{}, arg2 *model.Audit) (*gorm.DB, error) {
+func (m *MockAuditRepository) Audit(arg0 context.Context, arg1 *gorm.DB, arg2 interface{}, arg3 *model.Audit) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Audit", arg0, arg1, arg2)
-	ret0, _ := ret[0].(*gorm.DB)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
+	ret := m.ctrl.Call(m, "Audit", arg0, arg1, arg2, arg3)
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Audit indicates an expected call of Audit.
-func (mr *MockAuditRepositoryMockRecorder) Audit(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockAuditRepositoryMockRecorder) Audit(arg0, arg1, arg2, arg3 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Audit", reflect.TypeOf((*MockAuditRepository)(nil).Audit), arg0, arg1, arg2)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Audit", reflect.TypeOf((*MockAuditRepository)(nil).Audit), arg0, arg1, arg2, arg3)
 }

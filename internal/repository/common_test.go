@@ -67,7 +67,7 @@ type repoTestKit struct {
 	miniredis       *miniredis.Miniredis
 	dbmock          sqlmock.Sqlmock
 	db              *gorm.DB
-	cacheKeeper     cacher.CacheManager
+	cache           cacher.CacheManager
 	ctrl            *gomock.Controller
 	mockAuditRepo   *mock.MockAuditRepository
 	mockUserRepo    *mock.MockUserRepository
@@ -102,7 +102,7 @@ func initializeRepoTestKit(t *testing.T) (kit *repoTestKit, close func()) {
 	sessionRepo := mock.NewMockSessionRepository(ctrl)
 
 	tk := &repoTestKit{
-		cacheKeeper:     k,
+		cache:           k,
 		miniredis:       mr,
 		ctrl:            ctrl,
 		dbmock:          dbmock,

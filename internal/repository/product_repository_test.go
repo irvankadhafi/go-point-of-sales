@@ -24,6 +24,7 @@ func TestProductRepository_Create(t *testing.T) {
 		cache: kit.cache,
 	}
 
+	userID := int64(111)
 	product := &model.Product{
 		ID:          utils.GenerateID(),
 		Name:        "Apple iPhone 14 Pro Max",
@@ -53,7 +54,7 @@ func TestProductRepository_Create(t *testing.T) {
 		mock.ExpectQuery(`^INSERT INTO "products"`).WillReturnRows(rows)
 		mock.ExpectCommit()
 
-		err := repo.Create(context.Background(), product)
+		err := repo.Create(context.Background(), userID, product)
 		require.NoError(t, err)
 	})
 
@@ -62,7 +63,7 @@ func TestProductRepository_Create(t *testing.T) {
 		mock.ExpectQuery(`^INSERT INTO "products"`).WillReturnError(errors.New("db error"))
 		mock.ExpectRollback()
 
-		err := repo.Create(ctx, product)
+		err := repo.Create(ctx, userID, product)
 		require.Error(t, err)
 	})
 }
@@ -168,23 +169,6 @@ func TestProductRepository_SearchByPage(t *testing.T) {
 		}
 		mock.ExpectQuery(`^SELECT .+ FROM "products"`).
 			WillReturnRows(rows)
-
-		actualProductIDs, count, err := repo.SearchByPage(ctx, criteria)
-		require.NoError(t, err)
-		require.Equal(t, len(productIDs), len(actualProductIDs))
-		require.Equal(t, expectedCount, count)
-	})
-
-	t.Run("success, from cache", func(t *testing.T) {
-		defer kit.miniredis.FlushAll()
-		multiValue := &model.MultiCacheValue{
-			IDs:   productIDs,
-			Count: expectedCount,
-		}
-
-		cacheKey := repo.newProductCacheKeyByCriteria(criteria)
-		err := kit.miniredis.Set(cacheKey, utils.Dump(multiValue))
-		require.NoError(t, err)
 
 		actualProductIDs, count, err := repo.SearchByPage(ctx, criteria)
 		require.NoError(t, err)

@@ -27,7 +27,7 @@ Overall, using Clean Architecture in building a service can help me to create mo
 ## Project Structure
 ```bash
 .
-├── cache/
+├── cacher/
 |   # this package contains code related to managing the cache of your application. 
 |   # this could include functions for storing, retrieving, and deleting cache entries.
 ├── db/migrations
@@ -74,3 +74,163 @@ Overall, using Clean Architecture in building a service can help me to create mo
 └── ...
 ```
 
+
+
+## List API Endpoint
+
+```
+TODO: Add Postman Documentation
+```
+
+Below is the list of features and API endpoints available in this project:
+### Create Product
+```http
+POST /api/products
+```
+#### Request Body
+```javascript
+ {
+    "name"          : string,
+    "description"   : string,
+    "price"         : string,
+    "quantity"      : number
+}
+```
+Example:
+```javascript
+ {
+    "name"          : "Apple Iphone 14 128GB",
+    "description"   : "Samsung S10",
+    "price"         : "20000000",
+    "quantity"      : 100
+}
+```
+
+#### Responses
+```javascript
+{
+    "success" : bool,
+    "data"    : object
+}
+```
+Example:
+```javascript
+{
+    "success": true,
+        "data": {
+            "id": 1673488217743982998,
+            "name": "Apple Iphone 14 128GB",
+            "slug": "apple-iphone-14-128gb",
+            "description": "Iphone 14",
+            "quantity": 100,
+            "price": "Rp20.000.000",
+            "created_at": "2023-01-12T08:50:17.806853Z",
+            "updated_at": "2023-01-12T08:50:17.806853Z"
+    }
+}
+```
+
+
+### Search Product
+
+```http
+GET /api/products?query=iphone&page=1&size=10&sortBy=CREATED_AT_DESC
+```
+
+| Parameter | Type     | Description           |
+| :--- |:---------|:----------------------|
+| `query` | `string` | for searching by name |
+| `page` | `number` | current page number   |
+| `size` | `number` | limit size per page   |
+| `sortBy` | `string` | sort by: `CREATED_AT_ASC`, `CREATED_AT_DESC`, `PRICE_ASC`, `PRICE_DESC`, `NAME_ASC`, `NAME_DESC`             |
+
+
+#### Responses
+```javascript
+{
+  "success" : bool,
+  "data"    : {
+      "items" : array of products, 
+      "meta_info": meta information 
+    }
+}
+```
+Example:
+```javascript
+{
+    "success": true,
+    "data": {
+        "items": [
+            {
+                "id": 1673488524763738568,
+                "name": "Samsung S10 128GB",
+                "slug": "samsung-s10-128gb",
+                "description": "Samsung S10",
+                "quantity": 20,
+                "price": "Rp15.000.000",
+                "created_at": "2023-01-12T08:55:24.777905Z",
+                "updated_at": "2023-01-12T08:55:24.777905Z"
+            },
+            {
+                "id": 1673488217743982998,
+                "name": "Apple Iphone 14 128GB",
+                "slug": "apple-iphone-14-128gb",
+                "description": "Iphone 14",
+                "quantity": 100,
+                "price": "Rp20.000.000",
+                "created_at": "2023-01-12T08:50:17.806853Z",
+                "updated_at": "2023-01-12T08:50:17.806853Z"
+            }
+        ],
+        "meta_info": {
+            "size": 10,
+            "count": 2,
+            "count_page": 1,
+            "page": 1,
+            "next_page": 0
+        }
+    }
+}
+```
+## User Login Credential (After seed)
+``go run . seeder``
+
+- Admin:
+    ```
+    email: irvankadhafi@mail.com
+    password: 123456 
+    ```
+- Cashier
+     ```
+    email: johndoe@mail.com
+    password: 123456 
+    ```
+
+
+## How To Run This Project
+
+> Make sure you have set up a database and have run the command `make migrate` to perform the necessary database migrations before running the application.
+
+#### Run the Testing
+
+```bash
+$ make test
+```
+
+#### Run the Applications on Local Machine
+
+```bash
+# Clone into your workspace
+$ git clone git@github.com:irvankadhafi/go-point-of-sales.git
+#move to project
+$ cd go-point-of-sales
+# Run the application
+$ make run
+```
+
+## Tech Stack
+- Go 1.18
+- Echo
+- PostgreSQL
+- GORM
+- Redis

@@ -14,18 +14,18 @@ import (
 )
 
 type appClientRepo struct {
-	db          *gorm.DB
-	cacheKeeper cacher.CacheManager
+	db    *gorm.DB
+	cache cacher.CacheManager
 }
 
 // NewAppClientRepository constructor
 func NewAppClientRepository(
 	db *gorm.DB,
-	cacheKeeper cacher.CacheManager,
+	cache cacher.CacheManager,
 ) model.AppClientRepository {
 	return &appClientRepo{
-		db:          db,
-		cacheKeeper: cacheKeeper,
+		db:    db,
+		cache: cache,
 	}
 }
 
@@ -54,7 +54,7 @@ func (s *appClientRepo) FindByClientID(ctx context.Context, clientID string) (*m
 	err := s.db.WithContext(ctx).Take(&appClient, "client_id = ?", clientID).Error
 	switch err {
 	case nil:
-		err := s.cacheKeeper.StoreWithoutBlocking(cacher.NewItem(cacheKey, utils.Dump(appClient)))
+		err := s.cache.StoreWithoutBlocking(cacher.NewItem(cacheKey, utils.Dump(appClient)))
 		if err != nil {
 			logger.Error(err)
 		}
@@ -90,7 +90,7 @@ func (s *appClientRepo) FindByID(ctx context.Context, id int64) (*model.AppClien
 	err := s.db.WithContext(ctx).Take(&appClient, "id = ?", id).Error
 	switch err {
 	case nil:
-		err := s.cacheKeeper.StoreWithoutBlocking(cacher.NewItem(cacheKey, utils.Dump(appClient)))
+		err := s.cache.StoreWithoutBlocking(cacher.NewItem(cacheKey, utils.Dump(appClient)))
 		if err != nil {
 			logger.Error(err)
 		}
@@ -126,7 +126,7 @@ func (s *appClientRepo) newCacheKeyByID(id int64) string {
 
 func (s *appClientRepo) findFromCacheByKey(key string) (reply *model.AppClient, mu *redsync.Mutex, err error) {
 	var rep interface{}
-	rep, mu, err = s.cacheKeeper.GetOrLock(key)
+	rep, mu, err = s.cache.GetOrLock(key)
 	if err != nil || rep == nil {
 		return
 	}

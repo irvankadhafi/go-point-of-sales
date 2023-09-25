@@ -15,21 +15,21 @@ import (
 )
 
 type sessionRepo struct {
-	db           *gorm.DB
-	cacheManager cacher.CacheManager
-	userRepo     model.UserRepository
+	db       *gorm.DB
+	cache    cacher.CacheManager
+	userRepo model.UserRepository
 }
 
 // NewSessionRepository sessionRepo constructor
 func NewSessionRepository(
 	db *gorm.DB,
-	cacheKeeper cacher.CacheManager,
+	cache cacher.CacheManager,
 	userRepo model.UserRepository,
 ) model.SessionRepository {
 	return &sessionRepo{
-		db:           db,
-		cacheManager: cacheKeeper,
-		userRepo:     userRepo,
+		db:       db,
+		cache:    cache,
+		userRepo: userRepo,
 	}
 }
 
@@ -57,7 +57,7 @@ func (s *sessionRepo) DeleteByUserIDAndMaxRemainderSession(ctx context.Context, 
 			return err
 		}
 
-		if err := s.cacheManager.DeleteByKeys(cacheKeys); err != nil {
+		if err := s.cache.DeleteByKeys(cacheKeys); err != nil {
 			logger.Error(err)
 			return err
 		}
@@ -120,7 +120,7 @@ func (s *sessionRepo) FindByToken(ctx context.Context, tokenType model.TokenType
 	switch err {
 	case nil:
 	case gorm.ErrRecordNotFound:
-		storeNil(s.cacheManager, cacheKey)
+		storeNil(s.cache, cacheKey)
 		return nil, nil
 	default:
 		logger.Error(err)
@@ -166,7 +166,7 @@ func (s *sessionRepo) FindByID(ctx context.Context, id int64) (*model.Session, e
 	switch err {
 	case nil:
 	case gorm.ErrRecordNotFound:
-		storeNil(s.cacheManager, cacheKey)
+		storeNil(s.cache, cacheKey)
 		return nil, nil
 	default:
 		logger.Error(err)
@@ -192,7 +192,7 @@ func (s *sessionRepo) FindByID(ctx context.Context, id int64) (*model.Session, e
 }
 
 func (s *sessionRepo) CheckToken(ctx context.Context, token string) (exist bool, err error) {
-	reply, err := s.cacheManager.Get(model.NewSessionTokenCacheKey(token))
+	reply, err := s.cache.Get(model.NewSessionTokenCacheKey(token))
 	if err != nil {
 		return false, err
 	}
@@ -258,7 +258,7 @@ func (s *sessionRepo) cacheToken(session *model.Session) error {
 	}
 
 	now := time.Now()
-	return s.cacheManager.StoreMultiWithoutBlocking([]cacher.Item{
+	return s.cache.StoreMultiWithoutBlocking([]cacher.Item{
 		cacher.NewItemWithCustomTTL(model.NewSessionTokenCacheKey(session.AccessToken), sess, session.AccessTokenExpiredAt.Sub(now)),
 		cacher.NewItemWithCustomTTL(s.newCacheKeyByID(session.ID), sess, session.AccessTokenExpiredAt.Sub(now)),
 		cacher.NewItemWithCustomTTL(model.NewSessionTokenCacheKey(session.RefreshToken), sess, session.RefreshTokenExpiredAt.Sub(now)),
@@ -266,7 +266,7 @@ func (s *sessionRepo) cacheToken(session *model.Session) error {
 }
 
 func (s *sessionRepo) deleteCaches(session *model.Session) error {
-	return s.cacheManager.DeleteByKeys([]string{
+	return s.cache.DeleteByKeys([]string{
 		model.NewSessionTokenCacheKey(session.AccessToken),
 		model.NewSessionTokenCacheKey(session.RefreshToken),
 		s.newCacheKeyByID(session.ID),
@@ -279,7 +279,7 @@ func (s *sessionRepo) newCacheKeyByID(id int64) string {
 
 func (s *sessionRepo) findFromCacheByKey(key string) (reply *model.Session, mu *redsync.Mutex, err error) {
 	var rep interface{}
-	rep, mu, err = s.cacheManager.GetOrLock(key)
+	rep, mu, err = s.cache.GetOrLock(key)
 	if err != nil || rep == nil {
 		return
 	}
