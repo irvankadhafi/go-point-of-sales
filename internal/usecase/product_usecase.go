@@ -98,7 +98,6 @@ func (p *productUsecase) Search(ctx context.Context, requester *model.User, crit
 		return
 	}
 
-	criteria.SetDefaultValue()
 	productIDs, count, err := p.productRepo.SearchByPage(ctx, criteria)
 	if err != nil {
 		logger.Error(err)

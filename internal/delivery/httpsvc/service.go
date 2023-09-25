@@ -57,6 +57,7 @@ func (s *Service) initRoutes() {
 
 	productRoute := s.echo.Group("/products")
 	{
+		productRoute.GET("/", s.handleGetAllProducts(), s.httpMiddleware.MustAuthenticateAccessToken())
 		productRoute.POST("/", s.handleCreateProduct(), s.httpMiddleware.MustAuthenticateAccessToken())
 	}
 
