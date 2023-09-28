@@ -6,16 +6,18 @@ import (
 	"fmt"
 	"github.com/irvankadhafi/go-point-of-sales/auth"
 	"github.com/irvankadhafi/go-point-of-sales/cacher"
+	_ "github.com/irvankadhafi/go-point-of-sales/docs"
 	"github.com/irvankadhafi/go-point-of-sales/internal/config"
 	"github.com/irvankadhafi/go-point-of-sales/internal/db"
 	"github.com/irvankadhafi/go-point-of-sales/internal/delivery/httpsvc"
 	"github.com/irvankadhafi/go-point-of-sales/internal/helper"
 	"github.com/irvankadhafi/go-point-of-sales/internal/repository"
 	"github.com/irvankadhafi/go-point-of-sales/internal/usecase"
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	echoSwagger "github.com/swaggo/echo-swagger"
 	"net/http"
 	"os"
 	"os/signal"
@@ -100,6 +102,7 @@ func run(cmd *cobra.Command, args []string) {
 	httpServer.Use(middleware.Recover())
 	httpServer.Use(middleware.CORS())
 
+	httpServer.GET("/swagger/*", echoSwagger.WrapHandler, middleware.RemoveTrailingSlash())
 	apiGroup := httpServer.Group("/api")
 	httpsvc.RouteService(apiGroup, authUsecase, userUsecase, appClientUsecase, productUsecase, transactionUsecase, httpMiddleware)
 

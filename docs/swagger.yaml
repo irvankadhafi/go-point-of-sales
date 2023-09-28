@@ -1,0 +1,330 @@
+basePath: /api
+definitions:
+  httpsvc.metaInfo:
+    properties:
+      count:
+        type: integer
+      count_page:
+        type: integer
+      has_more:
+        type: boolean
+      next_page:
+        type: integer
+      page:
+        type: integer
+      size:
+        type: integer
+    type: object
+  httpsvc.paginationResponse-array_model_ProductResponse:
+    properties:
+      items:
+        items:
+          items:
+            $ref: '#/definitions/model.ProductResponse'
+          type: array
+        type: array
+      meta_info:
+        $ref: '#/definitions/httpsvc.metaInfo'
+    type: object
+  httpsvc.successResponse:
+    properties:
+      data: {}
+      success:
+        type: boolean
+    type: object
+  model.CreateProductInput:
+    properties:
+      description:
+        example: Pisang goreng gurih
+        maxLength: 80
+        type: string
+      name:
+        example: Pisang Goreng
+        maxLength: 60
+        minLength: 3
+        type: string
+      price:
+        example: 5000
+        minimum: 0
+        type: integer
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - name
+    type: object
+  model.ProductResponse:
+    properties:
+      created_at:
+        example: 25 September 2023 13:59 WIB
+        type: string
+      description:
+        example: Pisang goreng gurih
+        type: string
+      id:
+        example: "1695599921375543118"
+        type: string
+      name:
+        example: Pisang Goreng
+        type: string
+      price:
+        example: Rp4.000
+        type: string
+      quantity:
+        example: "10"
+        type: string
+      slug:
+        example: pisang-goreng
+        type: string
+      updated_at:
+        example: 25 September 2023 13:59 WIB
+        type: string
+    type: object
+  model.ProductSortType:
+    enum:
+    - CREATED_AT_ASC
+    - CREATED_AT_DESC
+    - PRICE_ASC
+    - PRICE_DESC
+    - NAME_ASC
+    - NAME_DESC
+    type: string
+    x-enum-varnames:
+    - ProductSortTypeCreatedAtAsc
+    - ProductSortTypeCreatedAtDesc
+    - ProductSortTypePriceAsc
+    - ProductSortTypePriceDesc
+    - ProductSortTypeNameAsc
+    - ProductSortTypeNameDesc
+  model.UpdateProductInput:
+    properties:
+      description:
+        example: Pisang goreng gurih
+        maxLength: 80
+        type: string
+      name:
+        example: Pisang Goreng
+        maxLength: 60
+        minLength: 3
+        type: string
+      price:
+        example: 5000
+        minimum: 0
+        type: integer
+      quantity:
+        example: 10
+        type: integer
+    required:
+    - name
+    type: object
+externalDocs:
+  description: OpenAPI
+  url: https://swagger.io/resources/open-api/
+info:
+  contact: {}
+  description: point of sales docs
+  termsOfService: http://swagger.io/terms/
+  title: Point Of Sales API
+  version: "1.0"
+paths:
+  /products:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Example: application/json'
+        in: header
+        name: Accept
+        type: string
+      - description: 'Use Token: Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Content-Type
+        type: string
+      - in: query
+        name: page
+        type: integer
+      - in: query
+        name: query
+        type: string
+      - in: query
+        name: size
+        type: integer
+      - enum:
+        - CREATED_AT_ASC
+        - CREATED_AT_DESC
+        - PRICE_ASC
+        - PRICE_DESC
+        - NAME_ASC
+        - NAME_DESC
+        in: query
+        name: sort_type
+        type: string
+        x-enum-varnames:
+        - ProductSortTypeCreatedAtAsc
+        - ProductSortTypeCreatedAtDesc
+        - ProductSortTypePriceAsc
+        - ProductSortTypePriceDesc
+        - ProductSortTypeNameAsc
+        - ProductSortTypeNameDesc
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/httpsvc.paginationResponse-array_model_ProductResponse'
+            - properties:
+                items:
+                  items:
+                    $ref: '#/definitions/model.ProductResponse'
+                  type: array
+              type: object
+      summary: Endpoint for get list pagination of products
+      tags:
+      - Product
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Example: application/json'
+        in: header
+        name: Accept
+        type: string
+      - description: 'Use Token: Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Content-Type
+        type: string
+      - description: payload
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.CreateProductInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductResponse'
+      summary: Store a product
+      tags:
+      - Product
+  /products/{id}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Use Token from Auth Service : Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Accept
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Content-Type
+        type: string
+      - description: 'Example: 1'
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/httpsvc.successResponse'
+      summary: Endpoint for delete product by ID
+      tags:
+      - Product
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Use Token from Auth Service : Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Accept
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Content-Type
+        type: string
+      - description: 'Example: 1'
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductResponse'
+      summary: Endpoint for get detail product by id
+      tags:
+      - Product
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 'Use Token from Auth Service : Bearer {token}'
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Accept
+        type: string
+      - description: 'Example: application/json'
+        in: header
+        name: Content-Type
+        type: string
+      - description: 'Example: 1'
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: payload
+        in: body
+        name: Body
+        required: true
+        schema:
+          $ref: '#/definitions/model.UpdateProductInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.ProductResponse'
+      summary: Endpoint for update product by ID
+      tags:
+      - Product
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"

@@ -87,10 +87,11 @@ func (p *productUsecase) Create(ctx context.Context, requester *model.User, inpu
 }
 
 // Search product with given search criteria
-func (p *productUsecase) Search(ctx context.Context, requester *model.User, criteria model.ProductSearchCriteria) (products []*model.Product, count int64, err error) {
+func (p *productUsecase) Search(ctx context.Context, requester *model.User, criteria model.ProductSearchCriteria) (products model.AnyProducts, count int64, err error) {
 	logger := logrus.WithFields(logrus.Fields{
-		"ctx":      utils.DumpIncomingContext(ctx),
-		"criteria": utils.Dump(criteria),
+		"ctx":       utils.DumpIncomingContext(ctx),
+		"requester": utils.Dump(requester),
+		"criteria":  utils.Dump(criteria),
 	})
 
 	if !requester.HasAccess(rbac.ResourceProduct, rbac.ActionViewAny) {
@@ -114,6 +115,84 @@ func (p *productUsecase) Search(ctx context.Context, requester *model.User, crit
 	}
 
 	return
+}
+
+// UpdateByID update product with id
+func (p *productUsecase) UpdateByID(ctx context.Context, requester *model.User, id int64, input model.UpdateProductInput) (*model.Product, error) {
+	logger := logrus.WithFields(logrus.Fields{
+		"ctx":       utils.DumpIncomingContext(ctx),
+		"requester": utils.Dump(requester),
+		"productID": id,
+		"input":     utils.Dump(input),
+	})
+
+	if !requester.HasAccess(rbac.ResourceProduct, rbac.ActionEditAny) {
+		return nil, ErrPermissionDenied
+	}
+
+	if err := input.Validate(); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+
+	oldProduct, err := p.findByID(ctx, id)
+	if err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+
+	updatedProduct := *oldProduct
+	updatedProduct.Description = input.Description
+	updatedProduct.Price = input.Price
+	updatedProduct.Quantity = input.Quantity
+
+	// validate if product with same name is exists
+	if input.Name != oldProduct.Name {
+		updatedProduct.Name = input.Name
+		updatedProduct.Slug = slug.Make(input.Name)
+
+		existingProduct, err := p.productRepo.FindBySlug(ctx, updatedProduct.Slug)
+		if err != nil && !errors.Is(err, ErrNotFound) {
+			logger.Error(err)
+			return nil, err
+		}
+		if existingProduct != nil {
+			return nil, ErrAlreadyExist
+		}
+	}
+
+	if err := p.productRepo.Update(ctx, requester.ID, &updatedProduct); err != nil {
+		logger.Error(err)
+		return nil, err
+	}
+
+	return &updatedProduct, nil
+}
+
+//DeleteByID delete product by id
+func (p *productUsecase) DeleteByID(ctx context.Context, requester *model.User, id int64) error {
+	logger := logrus.WithFields(logrus.Fields{
+		"ctx":       utils.DumpIncomingContext(ctx),
+		"requester": utils.Dump(requester),
+		"productID": id,
+	})
+
+	if !requester.HasAccess(rbac.ResourceProduct, rbac.ActionDeleteAny) {
+		return ErrPermissionDenied
+	}
+
+	product, err := p.findByID(ctx, id)
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+
+	if err := p.productRepo.Delete(ctx, requester.ID, product); err != nil {
+		logger.Error(err)
+		return err
+	}
+
+	return nil
 }
 
 func (p *productUsecase) findByID(ctx context.Context, id int64) (*model.Product, error) {

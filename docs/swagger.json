@@ -1,0 +1,484 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "point of sales docs",
+        "title": "Point Of Sales API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {},
+        "version": "1.0"
+    },
+    "basePath": "/api",
+    "paths": {
+        "/products": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Endpoint for get list pagination of products",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Accept",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Use Token: Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Content-Type",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "query",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "name": "size",
+                        "in": "query"
+                    },
+                    {
+                        "enum": [
+                            "CREATED_AT_ASC",
+                            "CREATED_AT_DESC",
+                            "PRICE_ASC",
+                            "PRICE_DESC",
+                            "NAME_ASC",
+                            "NAME_DESC"
+                        ],
+                        "type": "string",
+                        "x-enum-varnames": [
+                            "ProductSortTypeCreatedAtAsc",
+                            "ProductSortTypeCreatedAtDesc",
+                            "ProductSortTypePriceAsc",
+                            "ProductSortTypePriceDesc",
+                            "ProductSortTypeNameAsc",
+                            "ProductSortTypeNameDesc"
+                        ],
+                        "name": "sort_type",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/httpsvc.paginationResponse-array_model_ProductResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.ProductResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Store a product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Accept",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Use Token: Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Content-Type",
+                        "in": "header"
+                    },
+                    {
+                        "description": "payload",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.CreateProductInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/products/{id}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Endpoint for get detail product by id",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Use Token from Auth Service : Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Accept",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Content-Type",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Example: 1",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Endpoint for update product by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Use Token from Auth Service : Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Accept",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Content-Type",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Example: 1",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "payload",
+                        "name": "Body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/model.UpdateProductInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Product"
+                ],
+                "summary": "Endpoint for delete product by ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Use Token from Auth Service : Bearer {token}",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Accept",
+                        "in": "header"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Example: application/json",
+                        "name": "Content-Type",
+                        "in": "header"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Example: 1",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/httpsvc.successResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "httpsvc.metaInfo": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "count_page": {
+                    "type": "integer"
+                },
+                "has_more": {
+                    "type": "boolean"
+                },
+                "next_page": {
+                    "type": "integer"
+                },
+                "page": {
+                    "type": "integer"
+                },
+                "size": {
+                    "type": "integer"
+                }
+            }
+        },
+        "httpsvc.paginationResponse-array_model_ProductResponse": {
+            "type": "object",
+            "properties": {
+                "items": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/definitions/model.ProductResponse"
+                        }
+                    }
+                },
+                "meta_info": {
+                    "$ref": "#/definitions/httpsvc.metaInfo"
+                }
+            }
+        },
+        "httpsvc.successResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "model.CreateProductInput": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "example": "Pisang goreng gurih"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 60,
+                    "minLength": 3,
+                    "example": "Pisang Goreng"
+                },
+                "price": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 5000
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        },
+        "model.ProductResponse": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string",
+                    "example": "25 September 2023 13:59 WIB"
+                },
+                "description": {
+                    "type": "string",
+                    "example": "Pisang goreng gurih"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "1695599921375543118"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Pisang Goreng"
+                },
+                "price": {
+                    "type": "string",
+                    "example": "Rp4.000"
+                },
+                "quantity": {
+                    "type": "string",
+                    "example": "10"
+                },
+                "slug": {
+                    "type": "string",
+                    "example": "pisang-goreng"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "example": "25 September 2023 13:59 WIB"
+                }
+            }
+        },
+        "model.ProductSortType": {
+            "type": "string",
+            "enum": [
+                "CREATED_AT_ASC",
+                "CREATED_AT_DESC",
+                "PRICE_ASC",
+                "PRICE_DESC",
+                "NAME_ASC",
+                "NAME_DESC"
+            ],
+            "x-enum-varnames": [
+                "ProductSortTypeCreatedAtAsc",
+                "ProductSortTypeCreatedAtDesc",
+                "ProductSortTypePriceAsc",
+                "ProductSortTypePriceDesc",
+                "ProductSortTypeNameAsc",
+                "ProductSortTypeNameDesc"
+            ]
+        },
+        "model.UpdateProductInput": {
+            "type": "object",
+            "required": [
+                "name"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "maxLength": 80,
+                    "example": "Pisang goreng gurih"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 60,
+                    "minLength": 3,
+                    "example": "Pisang Goreng"
+                },
+                "price": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 5000
+                },
+                "quantity": {
+                    "type": "integer",
+                    "example": 10
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "BasicAuth": {
+            "type": "basic"
+        }
+    },
+    "externalDocs": {
+        "description": "OpenAPI",
+        "url": "https://swagger.io/resources/open-api/"
+    }
+}

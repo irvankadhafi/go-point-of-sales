@@ -119,6 +119,8 @@ func (p *productRepository) Create(ctx context.Context, userID int64, product *m
 		"product": utils.Dump(product),
 	})
 
+	product.UpdatedAt = time.Now()
+
 	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		if err := tx.Create(product).Error; err != nil {
 			logger.Error(err)
@@ -175,6 +177,47 @@ func (p *productRepository) Update(ctx context.Context, userID int64, product *m
 
 		return nil
 	})
+	if err != nil {
+		logger.Error(err)
+		return err
+	}
+
+	if err := p.deleteCaches(product); err != nil {
+		logger.Error(err)
+	}
+
+	return nil
+}
+
+// Delete soft delete a product
+func (p *productRepository) Delete(ctx context.Context, userID int64, product *model.Product) error {
+	logger := logrus.WithFields(logrus.Fields{
+		"ctx":     utils.DumpIncomingContext(ctx),
+		"userID":  userID,
+		"product": utils.Dump(product),
+	})
+
+	err := p.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		if err := tx.Delete(product).Error; err != nil {
+			logger.Error(err)
+			return err
+		}
+
+		err := p.auditRepo.Audit(ctx, tx, product, &model.Audit{
+			UserID:        userID,
+			AuditableType: p.name(),
+			AuditableID:   product.ID,
+			Action:        model.AuditActionDelete,
+			CreatedAt:     time.Now(),
+		})
+		if err != nil {
+			logger.Error(err)
+			return err
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		logger.Error(err)
 		return err

@@ -54,6 +54,7 @@ func setupLogger() {
 	if err != nil {
 		logLevel = log.DebugLevel
 	}
+
 	log.SetLevel(logLevel)
 }
 

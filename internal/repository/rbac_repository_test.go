@@ -20,7 +20,7 @@ func TestGroupRepository_CreateRoleResourceAction(t *testing.T) {
 	mock := kit.dbmock
 	repo := &rbacRepository{
 		db:           kit.db,
-		cacheManager: kit.cache,
+		cacheManager: kit.cacheKeeper,
 	}
 
 	var (
@@ -56,7 +56,7 @@ func TestGroupRepository_LoadPermission(t *testing.T) {
 	mock := kit.dbmock
 	repo := &rbacRepository{
 		db:           kit.db,
-		cacheManager: kit.cache,
+		cacheManager: kit.cacheKeeper,
 	}
 
 	var (

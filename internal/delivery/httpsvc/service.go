@@ -3,7 +3,7 @@ package httpsvc
 import (
 	"github.com/irvankadhafi/go-point-of-sales/auth"
 	"github.com/irvankadhafi/go-point-of-sales/internal/model"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
 // Service http service
@@ -57,7 +57,10 @@ func (s *Service) initRoutes() {
 
 	productRoute := s.echo.Group("/products")
 	{
-		productRoute.GET("/", s.handleGetAllProducts(), s.httpMiddleware.MustAuthenticateAccessToken())
+		productRoute.GET("/:id/", s.handleGetDetailProductByID(), s.httpMiddleware.MustAuthenticateAccessToken())
+		productRoute.PUT("/:id/", s.handleUpdateProductByID(), s.httpMiddleware.MustAuthenticateAccessToken())
+		productRoute.DELETE("/:id/", s.handleDeleteProductByID(), s.httpMiddleware.MustAuthenticateAccessToken())
+		productRoute.GET("/", s.handleGetListPaginationProducts(), s.httpMiddleware.MustAuthenticateAccessToken())
 		productRoute.POST("/", s.handleCreateProduct(), s.httpMiddleware.MustAuthenticateAccessToken())
 	}
 

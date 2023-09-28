@@ -1,6 +1,6 @@
 env: "development"
 log_level: "debug"
-port: "4000"
+port: "8001"
 postgres:
   host: "localhost:25432"
   database: "point_of_sales_db"

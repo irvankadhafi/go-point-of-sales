@@ -40,7 +40,8 @@ type Session struct {
 	IPAddress             string    `json:"ip_address"`
 	CreatedAt             time.Time `json:"created_at" sql:"DEFAULT:'now()':::STRING::TIMESTAMP" gorm:"->;<-:create"`
 	UpdatedAt             time.Time `json:"updated_at" sql:"DEFAULT:'now()':::STRING::TIMESTAMP"`
-	Role                  rbac.Role `json:"role" gorm:"-"`
+
+	Role rbac.Role `gorm:"-"`
 }
 
 // IsAccessTokenExpired check access token expired at against now

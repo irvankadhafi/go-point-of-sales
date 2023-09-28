@@ -6,7 +6,7 @@ import (
 	"github.com/irvankadhafi/go-point-of-sales/cacher"
 	"github.com/irvankadhafi/go-point-of-sales/internal/model"
 	"github.com/irvankadhafi/go-point-of-sales/rbac"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"

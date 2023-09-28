@@ -5,7 +5,7 @@ import (
 	"github.com/irvankadhafi/go-point-of-sales/internal/model"
 	"github.com/irvankadhafi/go-point-of-sales/internal/usecase"
 	"github.com/irvankadhafi/go-point-of-sales/utils"
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"net/http"
 )
